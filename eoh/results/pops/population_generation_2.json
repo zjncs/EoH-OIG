@@ -1,0 +1,26 @@
+[
+     {
+          "algorithm": "The algorithm selects the next node by minimizing a weighted sum of the distance from the current node to the candidate node and the distance from the candidate node to the destination node, where the weight for the latter is the proportion of nodes already visited.",
+          "code": "import numpy as np\n\ndef select_next_node(current_node, destination_node, unvisited_nodes, distance_matrix):\n    total_nodes = distance_matrix.shape[0]\n    visited_ratio = (total_nodes - len(unvisited_nodes)) / total_nodes\n    best_score = float('inf')\n    next_node = None\n    for candidate in unvisited_nodes:\n        d1 = distance_matrix[current_node, candidate]\n        d2 = distance_matrix[candidate, destination_node]\n        score = d1 + visited_ratio * d2\n        if score < best_score:\n            best_score = score\n            next_node = candidate\n    return next_node",
+          "objective": 7.03416,
+          "other_inf": null
+     },
+     {
+          "algorithm": "Next node minimizes the product of the distance from current node to candidate and the distance from candidate to destination node divided by their sum, with tie-breaking by immediate distance and then node ID.",
+          "code": "import numpy as np\n\ndef select_next_node(current_node, destination_node, unvisited_nodes, distance_matrix):\n    min_score = float('inf')\n    min_d1 = float('inf')\n    next_node = None\n    \n    for candidate in unvisited_nodes:\n        d1 = distance_matrix[current_node, candidate]\n        d2 = distance_matrix[candidate, destination_node]\n        denom = d1 + d2\n        if denom == 0:\n            score = 0\n        else:\n            score = (d1 * d2) / denom\n            \n        if score < min_score:\n            min_score = score\n            min_d1 = d1\n            next_node = candidate\n        elif score == min_score:\n            if d1 < min_d1:\n                min_d1 = d1\n                next_node = candidate\n            elif d1 == min_d1 and candidate < next_node:\n                next_node = candidate\n                \n    return next_node",
+          "objective": 7.45505,
+          "other_inf": null
+     },
+     {
+          "algorithm": "\"Next node minimizes (0.6 * distance from current node to candidate + 0.4 * distance from candidate to destination node), with tie-breaking by immediate distance and then node ID.\"",
+          "code": "import numpy as np\n\ndef select_next_node(current_node, destination_node, unvisited_nodes, distance_matrix):\n    alpha = 0.6\n    min_score = float('inf')\n    min_d1 = float('inf')\n    next_node = None\n    \n    for candidate in unvisited_nodes:\n        d1 = distance_matrix[current_node, candidate]\n        d2 = distance_matrix[candidate, destination_node]\n        score = alpha * d1 + (1 - alpha) * d2\n        \n        if score < min_score:\n            min_score = score\n            min_d1 = d1\n            next_node = candidate\n        elif score == min_score:\n            if d1 < min_d1:\n                min_d1 = d1\n                next_node = candidate\n            elif d1 == min_d1 and candidate < next_node:\n                next_node = candidate\n                \n    return next_node",
+          "objective": 7.50039,
+          "other_inf": null
+     },
+     {
+          "algorithm": " The algorithm selects the next node by minimizing the product of the distance from the current node to the candidate node and a weighted sum of the distance from the candidate node to the destination node and the minimum distance from the candidate node to any other unvisited node, with weights being the proportion of visited nodes and its complement respectively. ",
+          "code": "import numpy as np\n\ndef select_next_node(current_node, destination_node, unvisited_nodes, distance_matrix):\n    total_nodes = distance_matrix.shape[0]\n    visited_ratio = (total_nodes - len(unvisited_nodes)) / total_nodes\n    best_score = float('inf')\n    next_node = None\n    for candidate in unvisited_nodes:\n        d1 = distance_matrix[current_node, candidate]\n        d2 = distance_matrix[candidate, destination_node]\n        others = [node for node in unvisited_nodes if node != candidate]\n        if others:\n            d3 = np.min(distance_matrix[candidate, others])\n        else:\n            d3 = 0\n        linear_comb = visited_ratio * d2 + (1 - visited_ratio) * d3\n        score = d1 * linear_comb\n        if score < best_score:\n            best_score = score\n            next_node = candidate\n    return next_node",
+          "objective": 7.59725,
+          "other_inf": null
+     }
+]

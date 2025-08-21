@@ -1,0 +1,6 @@
+{
+     "algorithm": "The algorithm selects the next node by minimizing a weighted sum of the distance from the current node to the candidate node and the distance from the candidate node to the destination node, where the weight for the latter is the proportion of nodes already visited.",
+     "code": "import numpy as np\n\ndef select_next_node(current_node, destination_node, unvisited_nodes, distance_matrix):\n    total_nodes = distance_matrix.shape[0]\n    visited_ratio = (total_nodes - len(unvisited_nodes)) / total_nodes\n    best_score = float('inf')\n    next_node = None\n    for candidate in unvisited_nodes:\n        d1 = distance_matrix[current_node, candidate]\n        d2 = distance_matrix[candidate, destination_node]\n        score = d1 + visited_ratio * d2\n        if score < best_score:\n            best_score = score\n            next_node = candidate\n    return next_node",
+     "objective": 7.03416,
+     "other_inf": null
+}
